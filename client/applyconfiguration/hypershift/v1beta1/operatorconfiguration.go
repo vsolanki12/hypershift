@@ -20,10 +20,11 @@ package v1beta1
 // OperatorConfigurationApplyConfiguration represents a declarative configuration of the OperatorConfiguration type for use
 // with apply.
 type OperatorConfigurationApplyConfiguration struct {
-	ClusterVersionOperator *ClusterVersionOperatorSpecApplyConfiguration `json:"clusterVersionOperator,omitempty"`
-	ClusterNetworkOperator *ClusterNetworkOperatorSpecApplyConfiguration `json:"clusterNetworkOperator,omitempty"`
-	IngressOperator        *IngressOperatorSpecApplyConfiguration        `json:"ingressOperator,omitempty"`
-	KubeAPIServer          *ComponentLogLevelSpecApplyConfiguration      `json:"kubeAPIServer,omitempty"`
+	ClusterVersionOperator     *ClusterVersionOperatorSpecApplyConfiguration `json:"clusterVersionOperator,omitempty"`
+	ClusterNetworkOperator     *ClusterNetworkOperatorSpecApplyConfiguration `json:"clusterNetworkOperator,omitempty"`
+	IngressOperator            *IngressOperatorSpecApplyConfiguration        `json:"ingressOperator,omitempty"`
+	KubeAPIServer              *ComponentLogLevelSpecApplyConfiguration      `json:"kubeAPIServer,omitempty"`
+	OpenShiftControllerManager *ComponentLogLevelSpecApplyConfiguration      `json:"openShiftControllerManager,omitempty"`
 }
 
 // OperatorConfigurationApplyConfiguration constructs a declarative configuration of the OperatorConfiguration type for use with
@@ -61,5 +62,13 @@ func (b *OperatorConfigurationApplyConfiguration) WithIngressOperator(value *Ing
 // If called multiple times, the KubeAPIServer field is set to the value of the last call.
 func (b *OperatorConfigurationApplyConfiguration) WithKubeAPIServer(value *ComponentLogLevelSpecApplyConfiguration) *OperatorConfigurationApplyConfiguration {
 	b.KubeAPIServer = value
+	return b
+}
+
+// WithOpenShiftControllerManager sets the OpenShiftControllerManager field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the OpenShiftControllerManager field is set to the value of the last call.
+func (b *OperatorConfigurationApplyConfiguration) WithOpenShiftControllerManager(value *ComponentLogLevelSpecApplyConfiguration) *OperatorConfigurationApplyConfiguration {
+	b.OpenShiftControllerManager = value
 	return b
 }

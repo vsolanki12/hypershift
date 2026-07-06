@@ -52117,6 +52117,20 @@ ComponentLogLevelSpec
 <p>kubeAPIServer configures the log verbosity of the kube-apiserver component.</p>
 </td>
 </tr>
+<tr>
+<td>
+<code>openShiftControllerManager,omitzero</code></br>
+<em>
+<a href="#hypershift.openshift.io/v1beta1.ComponentLogLevelSpec">
+ComponentLogLevelSpec
+</a>
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>openShiftControllerManager configures the log verbosity of the openshift controller manager component.</p>
+</td>
+</tr>
 </tbody>
 </table>
 ###OptionalCapability { #hypershift.openshift.io/v1beta1.OptionalCapability }
