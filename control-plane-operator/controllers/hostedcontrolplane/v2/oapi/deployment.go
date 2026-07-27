@@ -62,6 +62,8 @@ func adaptDeployment(cpContext component.WorkloadContext, deployment *appsv1.Dep
 			c.Args = append(c.Args, "--internal-oauth-disabled=true")
 		}
 
+		c.Args = append(c.Args, fmt.Sprintf("--v=%d", resolveOAPIVerbosity(cpContext.HCP)))
+
 		podspec.UpsertEnvVar(c, corev1.EnvVar{
 			Name:  "NO_PROXY",
 			Value: strings.Join(noProxy, ","),
@@ -117,6 +119,15 @@ func adaptDeployment(cpContext component.WorkloadContext, deployment *appsv1.Dep
 	)
 
 	return nil
+}
+
+func resolveOAPIVerbosity(hcp *hyperv1.HostedControlPlane) int {
+	if hcp.Spec.OperatorConfiguration != nil &&
+		hcp.Spec.OperatorConfiguration.OpenShiftAPIServer.LogLevel != nil {
+		return util.LogLevelToKlogVerbosity(
+			hcp.Spec.OperatorConfiguration.OpenShiftAPIServer.LogLevel)
+	}
+	return 2
 }
 
 func applyAuditWebhookConfigFileVolume(podSpec *corev1.PodSpec, auditWebhookRef *corev1.LocalObjectReference) {
