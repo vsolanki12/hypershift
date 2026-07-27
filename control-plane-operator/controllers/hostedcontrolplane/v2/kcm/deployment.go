@@ -20,6 +20,17 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
+// resolveKCMVerbosity returns the klog verbosity level for kube-controller-manager.
+// It checks hcp.Spec.OperatorConfiguration.KubeControllerManager.LogLevel first, falling back to 2 (Normal).
+func resolveKCMVerbosity(hcp *hyperv1.HostedControlPlane) int {
+	if hcp.Spec.OperatorConfiguration != nil &&
+		hcp.Spec.OperatorConfiguration.KubeControllerManager.LogLevel != nil {
+		return util.LogLevelToKlogVerbosity(
+			hcp.Spec.OperatorConfiguration.KubeControllerManager.LogLevel)
+	}
+	return 2
+}
+
 func adaptDeployment(cpContext component.WorkloadContext, deployment *appsv1.Deployment) error {
 	hcp := cpContext.HCP
 	serviceServingCA, err := getServiceServingCA(cpContext)
@@ -33,6 +44,7 @@ func adaptDeployment(cpContext component.WorkloadContext, deployment *appsv1.Dep
 	}
 
 	podspec.UpdateContainer(ComponentName, deployment.Spec.Template.Spec.Containers, func(c *corev1.Container) {
+		c.Args = append(c.Args, fmt.Sprintf("--v=%d", resolveKCMVerbosity(hcp)))
 		c.Args = append(c.Args,
 			fmt.Sprintf("--cluster-cidr=%s", netutil.FirstClusterCIDR(hcp.Spec.Networking.ClusterNetwork)),
 			fmt.Sprintf("--service-cluster-ip-range=%s", netutil.FirstServiceCIDR(hcp.Spec.Networking.ServiceNetwork)),
